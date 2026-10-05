@@ -1,0 +1,252 @@
+:root {
+  /* Color tokens */
+  --navy-950: #0b1120;
+  --navy-900: #0f172a;
+  --navy-800: #16213d;
+  --navy-700: #1e2b4d;
+
+  --canvas: #f4f6f9;
+  --surface: #ffffff;
+  --border: #e6e9ef;
+  --border-soft: #eef1f5;
+
+  --text-primary: #1a2233;
+  --text-secondary: #5b6478;
+  --text-muted: #98a1b3;
+  --text-on-navy: #eef1fb;
+  --text-on-navy-muted: #8b96b8;
+
+  --indigo: #4f46e5;
+  --indigo-dark: #4338ca;
+  --indigo-soft: #eeecfd;
+
+  --income: #16a34a;
+  --income-soft: #e7f7ee;
+  --expense: #ef4444;
+  --expense-soft: #fdecec;
+  --savings: #7c3aed;
+  --savings-soft: #f1eafd;
+  --warning: #f59e0b;
+  --warning-soft: #fef3e0;
+  --danger: #dc2626;
+  --danger-soft: #fde8e8;
+
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04), 0 8px 24px rgba(16, 24, 40, 0.06);
+  --shadow-pop: 0 12px 32px rgba(16, 24, 40, 0.14);
+
+  --font-head: "Sora", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--canvas);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-head);
+  margin: 0;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  font-family: var(--font-body);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d5dae3;
+  border-radius: 20px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--indigo);
+  outline-offset: 2px;
+}
+
+.btn {
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 11px 18px;
+  font-weight: 600;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: var(--indigo);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.28);
+}
+
+.btn-primary:hover {
+  background: var(--indigo-dark);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: #c7cddb;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover {
+  background: var(--border-soft);
+}
+
+.btn-danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.btn-danger:hover {
+  background: #fbd6d6;
+}
+
+.btn-block {
+  width: 100%;
+  justify-content: center;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-card);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.field input,
+.field select,
+.field textarea {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 11px 13px;
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--surface);
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--indigo);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+  outline: none;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.badge-income {
+  background: var(--income-soft);
+  color: var(--income);
+}
+
+.badge-expense {
+  background: var(--expense-soft);
+  color: var(--expense);
+}
+
+.badge-warning {
+  background: var(--warning-soft);
+  color: #92640a;
+}
+
+.badge-danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.badge-neutral {
+  background: var(--indigo-soft);
+  color: var(--indigo-dark);
+}
+
+@media (max-width: 720px) {
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+}

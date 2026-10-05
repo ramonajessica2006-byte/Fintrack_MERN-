@@ -1,0 +1,84 @@
+.goal-card {
+  padding: 20px;
+  min-width: 240px;
+}
+
+.goal-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.goal-card-top h4 {
+  font-size: 15px;
+}
+
+.goal-card-menu {
+  display: flex;
+  gap: 6px;
+}
+
+.icon-link {
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  opacity: 0.7;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.icon-link:hover {
+  opacity: 1;
+  background: var(--border-soft);
+}
+
+.goal-card-amounts {
+  margin-bottom: 10px;
+}
+
+.goal-saved {
+  font-family: var(--font-head);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--savings);
+}
+
+.goal-target {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.goal-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--border-soft);
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.goal-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--savings), var(--indigo));
+  border-radius: 999px;
+}
+
+.goal-percent {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.goal-add-row {
+  display: flex;
+  gap: 6px;
+}
+
+.goal-add-row input {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 10px;
+  font-size: 13px;
+  min-width: 0;
+}
