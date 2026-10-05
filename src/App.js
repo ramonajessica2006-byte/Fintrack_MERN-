@@ -27,6 +27,7 @@ import Savings from "./pages/Savings";
 import Insights from "./pages/Insights";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import AdminDashboard from "./pages/AdminDashboard";
 
 export default function App() {
   const [user, setUser] = useState(() => storage.getSession());
@@ -42,18 +43,52 @@ export default function App() {
   const [txEditing, setTxEditing] = useState(null);
 
   // Load data whenever a user session becomes active.
-  useEffect(() => {
-    if (!user) return;
-    seedIfNeeded(user.userType);
-    setTransactions(storage.getTransactions());
-    setBudgets(storage.getBudgets());
-    setGoals(storage.getGoals());
-  }, [user]);
+useEffect(() => {
+  if (!user) return;
 
-  const persistTransactions = (list) => {
-    setTransactions(list);
-    storage.saveTransactions(list);
+  const loadUserData = async () => {
+    try {
+      // Load transactions from MongoDB
+      const token = localStorage.getItem("fintrack_token");
+
+      const transactionResponse = await fetch(
+        "http://localhost:5000/api/transactions",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const transactionData = await transactionResponse.json();
+
+      if (!transactionResponse.ok) {
+        throw new Error(
+          transactionData.message ||
+            "Unable to load transactions"
+        );
+      }
+
+      setTransactions(transactionData.transactions || []);
+
+      // Budget and Goals still use the existing local storage
+      setBudgets(storage.getBudgets());
+      setGoals(storage.getGoals());
+    } catch (error) {
+      console.error("Error loading financial data:", error);
+
+      // Keep budget and goals working
+      setBudgets(storage.getBudgets());
+      setGoals(storage.getGoals());
+    }
   };
+
+  loadUserData();
+}, [user]);
+
+const persistTransactions = (list) => {
+  setTransactions(list);
+};
   const persistBudgets = (list) => {
     setBudgets(list);
     storage.saveBudgets(list);
@@ -88,9 +123,18 @@ export default function App() {
 
   // ---- Auth handlers ----
   const handleLoggedIn = (u) => {
-    setUser({ fullName: u.fullName, email: u.email, userType: u.userType });
-    setPage("dashboard");
-  };
+  setUser({
+    id: u.id,
+    name: u.name,
+    fullName: u.name,
+    email: u.email,
+    userType: u.userType,
+    role: u.role,
+  });
+
+  setPage(u.role === "admin" ? "admin" : "dashboard");
+};
+
   const handleSignedUp = (u) => {
     setUser({ fullName: u.fullName, email: u.email, userType: u.userType });
     setPage("dashboard");
@@ -102,15 +146,103 @@ export default function App() {
   };
 
   // ---- Transaction handlers ----
-  const openAddTx = () => { setTxEditing(null); setTxModalOpen(true); };
+ const openAddTx = () => {
+  console.log("Add Transaction clicked");
+  setTxEditing(null);
+  setTxModalOpen(true);
+};
   const openEditTx = (t) => { setTxEditing(t); setTxModalOpen(true); };
-  const saveTx = (tx) => {
-    const exists = transactions.some((t) => t.id === tx.id);
-    const updated = exists ? transactions.map((t) => (t.id === tx.id ? tx : t)) : [tx, ...transactions];
-    persistTransactions(updated);
+const saveTx = async (tx) => {
+  try {
+    const token = localStorage.getItem("fintrack_token");
+
+    const isEditing = Boolean(tx._id);
+
+    const url = isEditing
+      ? `http://localhost:5000/api/transactions/${tx._id}`
+      : "http://localhost:5000/api/transactions";
+
+    const response = await fetch(url, {
+      method: isEditing ? "PUT" : "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+
+      body: JSON.stringify({
+        type: tx.type,
+        title: tx.title,
+        amount: Number(tx.amount),
+        category: tx.category,
+        date: tx.date,
+        paymentMethod: tx.paymentMethod,
+        description: tx.description || "",
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to save transaction"
+      );
+    }
+
+    if (isEditing) {
+      setTransactions((current) =>
+        current.map((transaction) =>
+          transaction._id === data.transaction._id
+            ? data.transaction
+            : transaction
+        )
+      );
+    } else {
+      setTransactions((current) => [
+        data.transaction,
+        ...current,
+      ]);
+    }
+
     setTxModalOpen(false);
-  };
-  const deleteTx = (id) => persistTransactions(transactions.filter((t) => t.id !== id));
+    setTxEditing(null);
+  } catch (error) {
+    console.error("Save transaction error:", error);
+    alert(error.message);
+  }
+};
+const deleteTx = async (id) => {
+  try {
+    const token = localStorage.getItem("fintrack_token");
+
+    const response = await fetch(
+      `http://localhost:5000/api/transactions/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Unable to delete transaction"
+      );
+    }
+
+    setTransactions((current) =>
+      current.filter(
+        (transaction) => transaction._id !== id
+      )
+    );
+  } catch (error) {
+    console.error("Delete transaction error:", error);
+    alert(error.message);
+  }
+};
 
   // ---- Budget handlers ----
   const saveBudget = (data) => {
@@ -203,6 +335,9 @@ export default function App() {
             recentTransactions={[...transactions].sort((a, b) => new Date(b.date) - new Date(a.date))}
           />
         )}
+        {page === "admin" && user.role === "admin" && (
+  <AdminDashboard />
+)}
 
         {page === "transactions" && (
           <Transactions transactions={transactions} onEdit={openEditTx} onDelete={deleteTx} onAdd={openAddTx} />

@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const authMiddleware = require("../middleware/authMiddleware");
+const adminMiddleware = require("../middleware/adminMiddleware");
 const router = express.Router();
 
 // =========================
@@ -148,5 +149,30 @@ router.get("/me", authMiddleware, async (req, res) => {
     });
   }
 });
+// =========================
+// ADMIN TEST ROUTE
+// =========================
+router.get(
+  "/admin",
+  authMiddleware,
+  adminMiddleware,
+  async (req, res) => {
+    try {
+      const users = await User.find().select("-password");
+
+      res.status(200).json({
+        message: "Admin access granted",
+        totalUsers: users.length,
+        users,
+      });
+    } catch (error) {
+      console.error("Admin route error:", error);
+
+      res.status(500).json({
+        message: "Server error",
+      });
+    }
+  }
+);
 
 module.exports = router;

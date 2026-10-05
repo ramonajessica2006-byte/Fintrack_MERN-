@@ -44,7 +44,11 @@ export default function Transactions({ transactions, onEdit, onDelete, onAdd }) 
             ))}
           </select>
         </div>
-        <button className="btn btn-primary" onClick={onAdd}>+ Add Transaction</button>
+      <div className="page-toolbar">
+  <div className="page-toolbar-filters">
+    ...
+  </div>
+</div>
       </div>
 
       <div className="card section-card">

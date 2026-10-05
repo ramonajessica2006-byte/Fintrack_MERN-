@@ -1,38 +1,91 @@
+.transaction-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  z-index: 999999;
+}
+
+.transaction-modal-panel {
+  width: 480px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
+}
+
+.transaction-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 22px 10px;
+}
+
+.transaction-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #14213d;
+}
+
+.transaction-modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: #f0f1f5;
+  color: #555;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.transaction-modal-body {
+  padding: 14px 22px 24px;
+}
 .type-toggle {
   display: flex;
   gap: 8px;
-  margin-bottom: 18px;
-  background: var(--border-soft);
+  margin-bottom: 20px;
   padding: 4px;
-  border-radius: var(--radius-sm);
+  background: #f3f4f8;
+  border-radius: 12px;
 }
 
 .type-toggle-btn {
   flex: 1;
   border: none;
+  padding: 10px 15px;
+  border-radius: 9px;
   background: transparent;
-  padding: 9px 0;
-  border-radius: 7px;
-  font-weight: 600;
-  font-size: 13.5px;
-  color: var(--text-secondary);
-  transition: all 0.12s ease;
-}
-
-.active-expense {
-  background: var(--surface);
-  color: var(--expense);
-  box-shadow: var(--shadow-card);
-}
-
-.active-income {
-  background: var(--surface);
-  color: var(--income);
-  box-shadow: var(--shadow-card);
-}
-
-.form-error {
-  color: var(--danger);
+  color: #687286;
   font-size: 13px;
-  margin: -6px 0 14px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.type-toggle-btn:hover {
+  background: #e9e9f8;
+}
+
+.type-toggle-btn.active-expense {
+  background: #5548df;
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(85, 72, 223, 0.2);
+}
+
+.type-toggle-btn.active-income {
+  background: #35a96f;
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(53, 169, 111, 0.2);
 }
