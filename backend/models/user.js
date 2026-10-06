@@ -16,9 +16,24 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
+    // Required only for normal email/password accounts.
+    // Google OAuth users do not need a password.
     password: {
       type: String,
-      required: true,
+      default: null,
+    },
+
+    // Google account ID
+    googleId: {
+      type: String,
+      default: null,
+    },
+
+    // Identifies how the account was created
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
     },
 
     userType: {

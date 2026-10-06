@@ -1,10 +1,18 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const { OAuth2Client } = require("google-auth-library");
+
+const User = require("../models/user");
 const authMiddleware = require("../middleware/authMiddleware");
 const adminMiddleware = require("../middleware/adminMiddleware");
+
 const router = express.Router();
+
+// Google OAuth client
+const googleClient = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID
+);
 
 // =========================
 // REGISTER
@@ -34,6 +42,7 @@ router.post("/register", async (req, res) => {
       email,
       password: hashedPassword,
       userType,
+      authProvider: "local",
     });
 
     res.status(201).json({
@@ -62,14 +71,12 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check fields
     if (!email || !password) {
       return res.status(400).json({
         message: "Email and password are required",
       });
     }
 
-    // Find user
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -78,7 +85,13 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    // Compare password
+    // Google-only account cannot use password login
+    if (!user.password) {
+      return res.status(401).json({
+        message: "This account uses Google Sign-In. Please continue with Google.",
+      });
+    }
+
     const isPasswordCorrect = await bcrypt.compare(
       password,
       user.password
@@ -90,11 +103,9 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    // Update last login
     user.lastLogin = new Date();
     await user.save();
 
-    // Create JWT
     const token = jwt.sign(
       {
         userId: user._id,
@@ -125,12 +136,112 @@ router.post("/login", async (req, res) => {
     });
   }
 });
+
+// =========================
+// GOOGLE LOGIN
+// =========================
+router.post("/google", async (req, res) => {
+  try {
+    const { credential, userType } = req.body;
+
+    if (!credential) {
+      return res.status(400).json({
+        message: "Google credential is required",
+      });
+    }
+
+    // Verify Google ID token
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    if (!payload) {
+      return res.status(401).json({
+        message: "Invalid Google credential",
+      });
+    }
+
+    const googleId = payload.sub;
+    const email = payload.email;
+    const name = payload.name || "Google User";
+
+    if (!email) {
+      return res.status(400).json({
+        message: "Google account email not available",
+      });
+    }
+
+    // Find existing account
+    let user = await User.findOne({ email });
+
+    if (user) {
+      // Link Google account to existing user
+      user.googleId = googleId;
+      user.authProvider =
+        user.authProvider === "local"
+          ? "local"
+          : "google";
+
+      user.lastLogin = new Date();
+
+      await user.save();
+    } else {
+      // Create new Google user
+      user = await User.create({
+        name,
+        email,
+        password: null,
+        googleId,
+        authProvider: "google",
+        userType: userType || "adult",
+        role: "user",
+        lastLogin: new Date(),
+      });
+    }
+
+    // Create FinTrack JWT
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    res.status(200).json({
+      message: "Google login successful",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        userType: user.userType,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error("Google login error:", error);
+
+    res.status(401).json({
+      message: "Google authentication failed",
+    });
+  }
+});
+
 // =========================
 // GET CURRENT USER
 // =========================
 router.get("/me", authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId).select("-password");
+    const user = await User.findById(
+      req.user.userId
+    ).select("-password");
 
     if (!user) {
       return res.status(404).json({
@@ -149,6 +260,7 @@ router.get("/me", authMiddleware, async (req, res) => {
     });
   }
 });
+
 // =========================
 // ADMIN TEST ROUTE
 // =========================
@@ -175,4 +287,4 @@ router.get(
   }
 );
 
-module.exports = router;
+module.exports = router;  
