@@ -12,6 +12,7 @@ const KEYS = {
 
   SEEDED: "fintrack_seeded",
   CURRENT_USER: "fintrack_user",
+  TOKEN: "fintrack_token",
 };
 
 function read(key, fallback) {
@@ -29,9 +30,6 @@ function write(key, value) {
 
 /*
   Get the currently logged-in user.
-
-  Login.js already stores the backend user here:
-  fintrack_user
 */
 function getCurrentUser() {
   const user = read(KEYS.CURRENT_USER, null);
@@ -40,18 +38,15 @@ function getCurrentUser() {
     return user;
   }
 
-  // Fallback for older sessions
   return read(KEYS.SESSION, null);
 }
 
 /*
-  Create a unique identifier for the current user.
-
-  Prefer MongoDB user ID.
-  Fall back to email if necessary.
+  Create a unique identifier for the user.
+  Prefers MongoDB user ID, then email, falling back to 'guest'.
 */
-function getUserIdentifier() {
-  const user = getCurrentUser();
+function getUserIdentifier(explicitUser) {
+  const user = explicitUser || getCurrentUser();
 
   if (!user) {
     return "guest";
@@ -66,11 +61,10 @@ function getUserIdentifier() {
 }
 
 /*
-  Generate a user-specific storage key.
+  Generate a strictly user-specific storage key.
 */
-function userKey(baseKey) {
-  const userId = getUserIdentifier();
-
+function userKey(baseKey, user) {
+  const userId = getUserIdentifier(user);
   return `${baseKey}_${userId}`;
 }
 
@@ -78,94 +72,59 @@ export const storage = {
   KEYS,
 
   // =========================================
-  // ACCOUNTS
+  // ACCOUNTS & SESSION
   // =========================================
 
   getUsers: () => read(KEYS.USERS, []),
 
-  saveUsers: (users) =>
-    write(KEYS.USERS, users),
+  saveUsers: (users) => write(KEYS.USERS, users),
 
-  getSession: () =>
-    read(KEYS.SESSION, null),
+  getSession: () => getCurrentUser(),
 
-  setSession: (user) =>
-    write(KEYS.SESSION, user),
+  setSession: (user) => {
+    write(KEYS.SESSION, user);
+    write(KEYS.CURRENT_USER, user);
+  },
 
-  clearSession: () =>
-    localStorage.removeItem(KEYS.SESSION),
+  clearSession: () => {
+    localStorage.removeItem(KEYS.SESSION);
+    localStorage.removeItem(KEYS.CURRENT_USER);
+    localStorage.removeItem(KEYS.TOKEN);
+  },
 
-  // =========================================
-  // CURRENT USER
-  // =========================================
+  getCurrentUser: () => getCurrentUser(),
 
-  getCurrentUser: () =>
-    getCurrentUser(),
-
-  getUserIdentifier: () =>
-    getUserIdentifier(),
+  getUserIdentifier: (user) => getUserIdentifier(user),
 
   // =========================================
-  // TRANSACTIONS
+  // USER-SPECIFIC TRANSACTIONS (Offline/Local Cache)
   // =========================================
 
-  getTransactions: () =>
-    read(
-      userKey(KEYS.TRANSACTIONS),
-      []
-    ),
+  getTransactions: (user) => read(userKey(KEYS.TRANSACTIONS, user), []),
 
-  saveTransactions: (list) =>
-    write(
-      userKey(KEYS.TRANSACTIONS),
-      list
-    ),
+  saveTransactions: (list, user) => write(userKey(KEYS.TRANSACTIONS, user), list),
 
   // =========================================
-  // BUDGETS
+  // USER-SPECIFIC BUDGETS
   // =========================================
 
-  getBudgets: () =>
-    read(
-      userKey(KEYS.BUDGETS),
-      []
-    ),
+  getBudgets: (user) => read(userKey(KEYS.BUDGETS, user), []),
 
-  saveBudgets: (list) =>
-    write(
-      userKey(KEYS.BUDGETS),
-      list
-    ),
+  saveBudgets: (list, user) => write(userKey(KEYS.BUDGETS, user), list),
 
   // =========================================
-  // GOALS
+  // USER-SPECIFIC GOALS
   // =========================================
 
-  getGoals: () =>
-    read(
-      userKey(KEYS.GOALS),
-      []
-    ),
+  getGoals: (user) => read(userKey(KEYS.GOALS, user), []),
 
-  saveGoals: (list) =>
-    write(
-      userKey(KEYS.GOALS),
-      list
-    ),
+  saveGoals: (list, user) => write(userKey(KEYS.GOALS, user), list),
 
   // =========================================
   // SEED FLAG
   // =========================================
 
-  isSeeded: () =>
-    read(
-      userKey(KEYS.SEEDED),
-      false
-    ),
+  isSeeded: (user) => read(userKey(KEYS.SEEDED, user), false),
 
-  setSeeded: () =>
-    write(
-      userKey(KEYS.SEEDED),
-      true
-    ),
+  setSeeded: (user) => write(userKey(KEYS.SEEDED, user), true),
 };

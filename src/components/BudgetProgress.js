@@ -1,19 +1,27 @@
 import React from "react";
 import "./BudgetProgress.css";
 import { formatCurrency } from "../utils/calculations";
+import translations from "../utils/translations";
 
-export default function BudgetProgress({ item }) {
+export default function BudgetProgress({ item, language = "en" }) {
+  const t = translations[language] || translations.en;
+
+  const displayCategory =
+    item.category === "All Categories" || item.category === "அனைத்து வகைகளும்"
+      ? t.allCategories
+      : t[`cat${item.category}`] || item.category;
+
   const statusText =
     item.status === "exceeded"
-      ? `🔴 Exceeded by ${formatCurrency(Math.abs(item.remaining))}`
+      ? `🔴 ${t.exceededBy} ${formatCurrency(Math.abs(item.remaining))}`
       : item.status === "warning"
-      ? `⚠️ Close to your ${item.category} budget`
-      : `${formatCurrency(item.remaining)} remaining`;
+      ? `⚠️ ${t.closeToBudget}`
+      : `${formatCurrency(item.remaining)} ${t.remaining}`;
 
   return (
     <div className="budget-progress">
       <div className="budget-progress-top">
-        <span className="budget-progress-category">{item.category}</span>
+        <span className="budget-progress-category">{displayCategory}</span>
         <span className="budget-progress-amounts">
           {formatCurrency(item.spent)} / {formatCurrency(item.limit)}
         </span>
@@ -26,7 +34,7 @@ export default function BudgetProgress({ item }) {
       </div>
       <div className="budget-progress-bottom">
         <span className={`budget-progress-status status-text-${item.status}`}>{statusText}</span>
-        <span className="budget-progress-percent">{item.percent}% used</span>
+        <span className="budget-progress-percent">{item.percent}% {t.used}</span>
       </div>
     </div>
   );

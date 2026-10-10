@@ -1,0 +1,523 @@
+/* FinBot Floating Financial Assistant Widget Styles */
+
+/* ==========================================================================
+   LAUNCHER (CLOSED / MINIMIZED STATE)
+   ========================================================================== */
+.finbot-launcher {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4338ca 0%, #6366f1 50%, #7c3aed 100%);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4), 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  outline: none;
+}
+
+.finbot-launcher:hover {
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 12px 30px rgba(79, 70, 229, 0.5), 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.finbot-launcher:active {
+  transform: scale(0.96);
+}
+
+.finbot-launcher-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.finbot-launcher:hover .finbot-launcher-icon {
+  transform: rotate(-8deg);
+}
+
+.finbot-status-dot-pulse {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  background: #10b981;
+  border: 2.5px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: finbotPulse 2s infinite;
+}
+
+@keyframes finbotPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.finbot-tooltip {
+  position: absolute;
+  right: 68px;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(6px);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.finbot-launcher:hover .finbot-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ==========================================================================
+   CHAT PANEL (OPEN STATE)
+   ========================================================================== */
+.finbot-panel {
+  position: fixed;
+  bottom: 92px;
+  right: 24px;
+  width: 385px;
+  max-width: calc(100vw - 32px);
+  height: 560px;
+  max-height: calc(100vh - 110px);
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 20px 48px -8px rgba(15, 23, 42, 0.24), 0 0 0 1px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 9999;
+  animation: finbotSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  font-family: inherit;
+}
+
+@keyframes finbotSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* HEADER */
+.finbot-header {
+  background: linear-gradient(135deg, #3730a3 0%, #4f46e5 55%, #6366f1 100%);
+  color: #ffffff;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  user-select: none;
+}
+
+.finbot-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.finbot-avatar-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #4338ca;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.finbot-title-area h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.finbot-title-area p {
+  font-size: 11px;
+  color: #e0e7ff;
+  margin: 2px 0 0 0;
+  line-height: 1.2;
+}
+
+.finbot-live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9.5px;
+  background: rgba(16, 185, 129, 0.2);
+  color: #a7f3d0;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.finbot-live-pill-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #34d399;
+}
+
+.finbot-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.finbot-btn-icon {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: #ffffff;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.15s ease;
+}
+
+.finbot-btn-icon:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
+
+/* ==========================================================================
+   CONVERSATION AREA
+   ========================================================================== */
+.finbot-messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #fafbfe;
+  scroll-behavior: smooth;
+}
+
+.finbot-messages-container::-webkit-scrollbar {
+  width: 5px;
+}
+.finbot-messages-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+/* WELCOME BANNER */
+.finbot-welcome-card {
+  background: #ffffff;
+  border: 1px solid #e0e7ff;
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 10px;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.05);
+  margin-bottom: 4px;
+}
+
+.finbot-welcome-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.finbot-welcome-text h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin: 0 0 4px 0;
+}
+
+.finbot-welcome-text p {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* MESSAGE ROWS */
+.finbot-msg-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  width: 100%;
+}
+
+.finbot-msg-row.user {
+  justify-content: flex-end;
+}
+
+.finbot-msg-row.bot {
+  justify-content: flex-start;
+}
+
+.finbot-msg-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #4338ca;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-bottom: 4px;
+}
+
+.finbot-msg-bubble {
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.finbot-msg-row.user .finbot-msg-bubble {
+  background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 2px 8px rgba(67, 56, 202, 0.25);
+}
+
+.finbot-msg-row.bot .finbot-msg-bubble {
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.finbot-msg-time {
+  font-size: 10px;
+  margin-top: 4px;
+  opacity: 0.7;
+  text-align: right;
+}
+
+.finbot-msg-row.user .finbot-msg-time {
+  color: #e0e7ff;
+}
+
+.finbot-msg-row.bot .finbot-msg-time {
+  color: #94a3b8;
+}
+
+/* TYPING INDICATOR */
+.finbot-typing-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  width: fit-content;
+  font-size: 12px;
+  color: #64748b;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.finbot-typing-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.finbot-typing-dots span {
+  width: 6px;
+  height: 6px;
+  background: #6366f1;
+  border-radius: 50%;
+  animation: finbotBounce 1.4s infinite ease-in-out both;
+}
+
+.finbot-typing-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.finbot-typing-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes finbotBounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+/* ==========================================================================
+   SUGGESTED QUICK CHIPS
+   ========================================================================== */
+.finbot-chips-bar {
+  padding: 8px 12px 6px 12px;
+  background: #ffffff;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+
+.finbot-chips-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.finbot-chip {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  padding: 5px 11px;
+  border-radius: 14px;
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  font-family: inherit;
+}
+
+.finbot-chip:hover:not(:disabled) {
+  background: #e0e7ff;
+  border-color: #c7d2fe;
+  color: #4338ca;
+  transform: translateY(-1px);
+}
+
+.finbot-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   INPUT BAR
+   ========================================================================== */
+.finbot-input-bar {
+  padding: 10px 12px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.finbot-input {
+  flex: 1;
+  border: 1px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 9px 14px;
+  font-size: 13px;
+  color: #1e293b;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: #f8fafc;
+  font-family: inherit;
+}
+
+.finbot-input:focus {
+  border-color: #6366f1;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.finbot-input::placeholder {
+  color: #94a3b8;
+  font-size: 12.5px;
+}
+
+.finbot-send-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(67, 56, 202, 0.3);
+  font-size: 14px;
+}
+
+.finbot-send-btn:hover:not(:disabled) {
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(67, 56, 202, 0.45);
+}
+
+.finbot-send-btn:disabled {
+  background: #cbd5e1;
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ==========================================================================
+   RESPONSIVENESS (MOBILE)
+   ========================================================================== */
+@media (max-width: 480px) {
+  .finbot-launcher {
+    bottom: 18px;
+    right: 18px;
+    width: 52px;
+    height: 52px;
+  }
+
+  .finbot-panel {
+    bottom: 80px;
+    right: 12px;
+    width: calc(100vw - 24px);
+    height: 520px;
+    max-height: calc(100vh - 96px);
+    border-radius: 16px;
+  }
+
+  .finbot-msg-bubble {
+    max-width: 88%;
+  }
+}

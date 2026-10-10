@@ -88,6 +88,27 @@
   padding: 0 3px;
 }
 
+.header-lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: var(--shadow-card);
+}
+
+.header-lang-btn:hover {
+  background: var(--border-soft);
+  border-color: #cbd5e1;
+}
+
 .header-notif-wrap {
   position: relative;
 }

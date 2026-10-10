@@ -71,12 +71,17 @@ export default function Login({ onLoggedIn, onGoToSignUp }) {
         auto_select: false,
       });
 
+      const btnWidth = Math.min(
+        360,
+        Math.max(260, window.innerWidth - 64)
+      );
+
       window.google.accounts.id.renderButton(
         googleButtonRef.current,
         {
           theme: "outline",
           size: "large",
-          width: 360,
+          width: btnWidth,
           text: "continue_with",
           shape: "rectangular",
         }
@@ -97,6 +102,7 @@ export default function Login({ onLoggedIn, onGoToSignUp }) {
         );
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // =========================
@@ -163,7 +169,7 @@ export default function Login({ onLoggedIn, onGoToSignUp }) {
       );
 
       setError(
-        "Unable to connect to the FinTrack server."
+        "Unable to connect to the server."
       );
     }
 
@@ -229,7 +235,7 @@ export default function Login({ onLoggedIn, onGoToSignUp }) {
       );
 
       setError(
-        "Unable to connect to the server. Please make sure the FinTrack backend is running."
+        "Unable to connect to the server. Please make sure the backend is running."
       );
     }
 
@@ -248,263 +254,139 @@ export default function Login({ onLoggedIn, onGoToSignUp }) {
   };
 
   return (
-    <div className="auth-shell">
-
-      <div className="auth-visual">
-
-        <div className="auth-visual-brand">
-
-          <div className="auth-visual-mark">
-            F
-          </div>
-
-          <div className="auth-visual-brandtext">
-            FinTrack
-          </div>
-
+    <div className="login-shell">
+      <div className="login-card">
+        <div className="login-brand">
+          <div className="login-brand-mark">F</div>
+          <span className="login-brand-text">FinTrack</span>
         </div>
 
-        <h2>
-          Your money, understood — not just tracked.
-        </h2>
+        {forgotMode ? (
+          <>
+            <h1>Reset your password</h1>
 
-        <p>
-          Beyond just logging transactions, FinTrack
-          studies your spending patterns and turns them
-          into a recommendation you can actually act on today.
-        </p>
+            <p>
+              Enter your account email and we'll send you a reset link.
+            </p>
 
-        <div className="auth-visual-stats">
-
-          <div>
-
-            <div className="auth-visual-stat-num">
-              ₹
-            </div>
-
-            <div className="auth-visual-stat-label">
-              INR-first, built for India
-            </div>
-
-          </div>
-
-          <div>
-
-            <div className="auth-visual-stat-num">
-              Live
-            </div>
-
-            <div className="auth-visual-stat-label">
-              Insights update automatically
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <div className="auth-form-side">
-
-        <div className="auth-form-card">
-
-          {forgotMode ? (
-
-            <>
-              <h1>Reset your password</h1>
-
-              <p>
-                Enter your account email and we'll
-                send you a reset link.
-              </p>
-
-              {forgotMsg && (
-                <div className="auth-form-success">
-                  {forgotMsg}
-                </div>
-              )}
-
-              <form onSubmit={handleForgot}>
-
-                <div className="field">
-
-                  <label>Email</label>
-
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) =>
-                      setEmail(e.target.value)
-                    }
-                    placeholder="you@example.com"
-                    required
-                  />
-
-                </div>
-
-                <button
-                  type="submit"
-                  className="btn btn-primary btn-block"
-                >
-                  Send Reset Link
-                </button>
-
-              </form>
-
-              <div className="auth-footer-link">
-
-                <button
-                  onClick={() => {
-                    setForgotMode(false);
-                    setForgotMsg("");
-                  }}
-                >
-                  Back to Sign In
-                </button>
-
+            {forgotMsg && (
+              <div className="auth-form-success">
+                {forgotMsg}
               </div>
-            </>
+            )}
 
-          ) : (
-
-            <>
-              <h1>Welcome back</h1>
-
-              <p>
-                Sign in to see today's financial insights.
-              </p>
-
-              {error && (
-                <div className="auth-form-error">
-                  {error}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit}>
-
-                <div className="field">
-
-                  <label>Email</label>
-
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) =>
-                      setEmail(e.target.value)
-                    }
-                    placeholder="you@example.com"
-                    required
-                  />
-
-                </div>
-
-                <div className="field">
-
-                  <label>Password</label>
-
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) =>
-                      setPassword(e.target.value)
-                    }
-                    placeholder="••••••••"
-                    required
-                  />
-
-                </div>
-
-                <div className="auth-forgot">
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setForgotMode(true)
-                    }
-                  >
-                    Forgot Password?
-                  </button>
-
-                </div>
-
-                <button
-                  type="submit"
-                  className="btn btn-primary btn-block"
-                  disabled={loading}
-                >
-                  {loading
-                    ? "Signing In..."
-                    : "Sign In"}
-                </button>
-
-              </form>
-
-              {/* GOOGLE SIGN-IN */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  margin: "20px 0",
-                }}
-              >
-                <div
-                  style={{
-                    flex: 1,
-                    height: "1px",
-                    background: "#e5e7eb",
-                  }}
-                />
-
-                <span
-                  style={{
-                    fontSize: "12px",
-                    color: "#8a92a3",
-                  }}
-                >
-                  OR
-                </span>
-
-                <div
-                  style={{
-                    flex: 1,
-                    height: "1px",
-                    background: "#e5e7eb",
-                  }}
+            <form onSubmit={handleForgot}>
+              <div className="field">
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
                 />
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  minHeight: "40px",
-                  opacity: googleLoading ? 0.6 : 1,
+              <button
+                type="submit"
+                className="btn btn-primary btn-block"
+              >
+                Send Reset Link
+              </button>
+            </form>
+
+            <div className="auth-footer-link">
+              <button
+                onClick={() => {
+                  setForgotMode(false);
+                  setForgotMsg("");
                 }}
               >
-                <div ref={googleButtonRef}></div>
+                Back to Sign In
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <h1>Welcome back</h1>
+
+            <p>
+              Sign in to see today's financial insights.
+            </p>
+
+            {error && (
+              <div className="auth-form-error">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit}>
+              <div className="field">
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                />
               </div>
 
-              <div className="auth-footer-link">
+              <div className="field">
+                <label>Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
 
-                New to FinTrack?{" "}
-
+              <div className="auth-forgot">
                 <button
-                  onClick={onGoToSignUp}
+                  type="button"
+                  onClick={() => setForgotMode(true)}
                 >
-                  Create Account
+                  Forgot Password?
                 </button>
-
               </div>
 
-            </>
+              <button
+                type="submit"
+                className="btn btn-primary btn-block"
+                disabled={loading}
+              >
+                {loading ? "Signing In..." : "Sign In"}
+              </button>
+            </form>
 
-          )}
+            {/* OR DIVIDER */}
+            <div className="auth-divider">
+              <div className="auth-divider-line" />
+              <span>OR</span>
+              <div className="auth-divider-line" />
+            </div>
 
-        </div>
+            {/* GOOGLE SIGN-IN */}
+            <div
+              className="auth-google-wrap"
+              style={{
+                opacity: googleLoading ? 0.6 : 1,
+              }}
+            >
+              <div ref={googleButtonRef}></div>
+            </div>
 
+            <div className="auth-footer-link">
+              New to FinTrack?{" "}
+              <button onClick={onGoToSignUp}>
+                Create Account
+              </button>
+            </div>
+          </>
+        )}
       </div>
-
     </div>
   );
 }

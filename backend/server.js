@@ -1,5 +1,7 @@
 const authRoutes = require("./routes/authRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
+const assistantRoutes = require("./routes/assistantRoutes");
+const challengeRoutes = require("./routes/challengeRoutes");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -11,6 +13,8 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
+app.use("/api/assistant", assistantRoutes);
+app.use("/api/challenges", challengeRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)

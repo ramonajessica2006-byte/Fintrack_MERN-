@@ -4,6 +4,7 @@ import {
   EXPENSE_CATEGORIES,
   INCOME_CATEGORIES,
 } from "../utils/sampleData";
+import translations from "../utils/translations";
 
 const PAYMENT_METHODS = [
   "UPI",
@@ -30,7 +31,10 @@ export default function TransactionModal({
   initial,
   onClose,
   onSave,
+  language = "en",
 }) {
+  const t = translations[language] || translations.en;
+
   const [form, setForm] = useState(
     initial
       ? { ...initial }
@@ -60,17 +64,17 @@ export default function TransactionModal({
     e.preventDefault();
 
     if (!form.title.trim()) {
-      setError("Please enter a title.");
+      setError(t.pleaseEnterTitle);
       return;
     }
 
     if (!form.amount || Number(form.amount) <= 0) {
-      setError("Please enter a valid amount.");
+      setError(t.pleaseEnterAmount);
       return;
     }
 
     if (!form.date) {
-      setError("Please pick a date.");
+      setError(t.pleasePickDate);
       return;
     }
 
@@ -81,6 +85,11 @@ export default function TransactionModal({
         : {}),
       amount: Number(form.amount),
     });
+  };
+
+  const getMethodLabel = (method) => {
+    const key = `pm${method.replace(/\s+/g, "")}`;
+    return t[key] || method;
   };
 
   return (
@@ -95,21 +104,21 @@ export default function TransactionModal({
         <div className="transaction-modal-header">
           <h3>
             {initial
-              ? "Edit Transaction"
-              : "Add Transaction"}
+              ? t.editTransactionTitle
+              : t.addTransactionTitle}
           </h3>
 
           <button
             type="button"
             className="transaction-modal-close"
             onClick={onClose}
+            title={t.close}
           >
             ✕
           </button>
         </div>
 
         <div className="transaction-modal-body">
-
           <div className="type-toggle">
             <button
               type="button"
@@ -120,7 +129,7 @@ export default function TransactionModal({
               }`}
               onClick={() => switchType("expense")}
             >
-              Expense
+              {t.expense}
             </button>
 
             <button
@@ -132,14 +141,13 @@ export default function TransactionModal({
               }`}
               onClick={() => switchType("income")}
             >
-              Income
+              {t.income}
             </button>
           </div>
 
           <form onSubmit={handleSubmit}>
-
             <div className="field">
-              <label>Title</label>
+              <label>{t.title}</label>
 
               <input
                 value={form.title}
@@ -148,16 +156,19 @@ export default function TransactionModal({
                 }
                 placeholder={
                   form.type === "income"
-                    ? "e.g. Monthly Salary"
+                    ? language === "ta"
+                      ? "உதா. மாதாந்திர சம்பளம்"
+                      : "e.g. Monthly Salary"
+                    : language === "ta"
+                    ? "உதா. மளிகைப் பொருட்கள்"
                     : "e.g. Groceries"
                 }
               />
             </div>
 
             <div className="field-row">
-
               <div className="field">
-                <label>Amount (₹)</label>
+                <label>{t.amount} (₹)</label>
 
                 <input
                   type="number"
@@ -170,23 +181,21 @@ export default function TransactionModal({
               </div>
 
               <div className="field">
-                <label>Date</label>
+                <label>{t.date}</label>
 
                 <input
                   type="date"
-                  value={form.date}
+                  value={form.date ? String(form.date).slice(0, 10) : ""}
                   onChange={(e) =>
                     update("date", e.target.value)
                   }
                 />
               </div>
-
             </div>
 
             <div className="field-row">
-
               <div className="field">
-                <label>Category</label>
+                <label>{t.category}</label>
 
                 <select
                   value={form.category}
@@ -199,14 +208,14 @@ export default function TransactionModal({
                       key={category}
                       value={category}
                     >
-                      {category}
+                      {t[`cat${category}`] || category}
                     </option>
                   ))}
                 </select>
               </div>
 
               <div className="field">
-                <label>Payment Method</label>
+                <label>{t.paymentMethod}</label>
 
                 <select
                   value={form.paymentMethod}
@@ -222,16 +231,15 @@ export default function TransactionModal({
                       key={method}
                       value={method}
                     >
-                      {method}
+                      {getMethodLabel(method)}
                     </option>
                   ))}
                 </select>
               </div>
-
             </div>
 
             <div className="field">
-              <label>Description (optional)</label>
+              <label>{t.descriptionOptional}</label>
 
               <textarea
                 rows={2}
@@ -242,7 +250,7 @@ export default function TransactionModal({
                     e.target.value
                   )
                 }
-                placeholder="Add a note..."
+                placeholder={t.addNotePlaceholder}
               />
             </div>
 
@@ -257,14 +265,13 @@ export default function TransactionModal({
               className="btn btn-primary btn-block"
             >
               {initial
-                ? "Save Changes"
-                : `Add ${
+                ? t.saveChanges
+                : `${t.add} ${
                     form.type === "income"
-                      ? "Income"
-                      : "Expense"
+                      ? t.income
+                      : t.expense
                   }`}
             </button>
-
           </form>
         </div>
       </div>

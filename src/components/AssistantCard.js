@@ -1,25 +1,28 @@
 import React from "react";
 import "./AssistantCard.css";
+import translations from "../utils/translations";
 
-export default function AssistantCard({ insights, compact }) {
+export default function AssistantCard({ insights = [], compact, language = "en" }) {
+  const t = translations[language] || translations.en;
+
   return (
     <div className="card assistant-card">
       <div className="assistant-card-header">
         <div className="assistant-card-badge">🤖</div>
         <div>
-          <h3>Your Financial Assistant</h3>
-          <p>Personalized insights based on your profile and spending behavior</p>
+          <h3>{t.financialAssistant}</h3>
+          <p>{t.financialAssistantSubtitle}</p>
         </div>
       </div>
 
       <div className="assistant-pipeline">
-        <span>Your data</span>
+        <span>{t.yourData}</span>
         <span className="pipeline-arrow">→</span>
-        <span>Behavior analysis</span>
+        <span>{t.behaviorAnalysis}</span>
         <span className="pipeline-arrow">→</span>
-        <span>Your profile</span>
+        <span>{t.yourProfile}</span>
         <span className="pipeline-arrow">→</span>
-        <span className="pipeline-final">Personalized advice</span>
+        <span className="pipeline-final">{t.personalizedAdvice}</span>
       </div>
 
       <div className={`assistant-insights ${compact ? "compact" : ""}`}>
@@ -31,7 +34,7 @@ export default function AssistantCard({ insights, compact }) {
             </div>
             <p className="assistant-insight-message">{insight.message}</p>
             <div className="assistant-insight-recommendation">
-              <span className="rec-label">💡 Recommendation</span>
+              <span className="rec-label">💡 {t.recommendation}</span>
               <span>{insight.recommendation}</span>
             </div>
           </div>
